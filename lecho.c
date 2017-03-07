@@ -30,14 +30,22 @@ typedef struct termios t_mode;
 int lecho_off(void *userdata) {
     t_mode *state = (t_mode *)userdata;
 #ifdef WIN32
+    DWORD cur_state = *state & ENABLE_ECHO_INPUT;
     *state &= ~(ENABLE_ECHO_INPUT);
     if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE),*state)) {
+        *state |= cur_state;
         return GetLastError();
     }
     return 0;
 #else
+    tcflag_t cur_state = state->c_lflag & ECHO;
     state->c_lflag &= ~(ECHO);
-    return tcsetattr(0, TCSANOW, state);
+    int tc_test = tcsetattr(0,TCSANOW,state);
+    if(tc_test != 0) {
+        state->c_lflag |= cur_state;
+    }
+
+    return tc_test;
 #endif
 }
 
@@ -45,14 +53,22 @@ int lecho_on(void *userdata) {
     t_mode *state = (t_mode *)userdata;
 
 #ifdef WIN32
+    DWORD cur_state = *state & ENABLE_ECHO_INPUT;
     *state |= ENABLE_ECHO_INPUT;
     if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE),*state)) {
+        *state |= cur_state;
         return GetLastError();
     }
     return 0;
 #else
+    tcflag_t cur_state = state->c_lflag & ECHO;
     state->c_lflag |= ECHO;
-    return tcsetattr(0, TCSANOW, state);
+    int tc_test = tcsetattr(0,TCSANOW,state);
+    if(tc_test != 0) {
+        state->c_lflag |= cur_state;
+    }
+
+    return tc_test;
 #endif
 }
 
