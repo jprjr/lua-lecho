@@ -4,6 +4,19 @@ A small Lua module for enabling/disabling terminal echo
 
 ## Usage:
 
+* `local lecho = require'lecho'`
+
+Initializes a new `lecho` object and grabs the
+current state of standard input's terminal settings.
+
+Object has the following methods:
+
+* `ok = lecho:off()` - turns off terminal echo, returns true if successful
+* `ok = lecho:on()` - turns on terminal echo, returns true if successful
+* `echo_on = lecho:status()` - returns true if echo is enabled
+
+## Example:
+
 ```lua
 local lecho = require'lecho'
 
