@@ -25,15 +25,14 @@ end)
 if not lecho_lib then -- module not already linked, try to find and open dynamically
   local dir_sep, sep, sub
   local gmatch = string.gmatch
-  local match = string.match
   local open = io.open
   local close = io.close
 
   for m in gmatch(package.config, '[^\n]+') do
-      local m = m:gsub('([^%w])','%%%1')
-      if not dir_sep then dir_sep = m
-          elseif not sep then sep = m
-          elseif not sub then sub = m end
+      local match = m:gsub('([^%w])','%%%1')
+      if not dir_sep then dir_sep = match
+          elseif not sep then sep = match
+          elseif not sub then sub = match end
   end
 
   local lib_name = concat(modname,dir_sep)
