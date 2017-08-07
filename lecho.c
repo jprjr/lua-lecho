@@ -1,7 +1,8 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#if !defined LUA_VERSION_NUM || LUA_VERSION_NUM==501
+#if !defined(luaL_newlibtable) \
+  && (!defined LUA_VERSION_NUM || LUA_VERSION_NUM==501)
 static void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup) {
   luaL_checkstack(L, nup+1, "too many upvalues");
   for (; l->name != NULL; l++) {  /* fill the table with given functions */
